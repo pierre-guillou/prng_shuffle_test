@@ -13,7 +13,7 @@ void fisher_yates_shuffle(std::vector<T> &toShuffle, U &&rng) {
 
 int main() {
   std::mt19937 random_engine{};
-  random_engine.seed(0);
+  random_engine.seed(1);
 
   {
     std::vector<size_t> vec(50);
