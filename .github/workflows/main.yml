@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  build_test_shuffle:
+  build_test_shuffle_linux:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -27,6 +27,55 @@ jobs:
 
     - name: Build & test
       run: |
+        mkdir build
+        cd build
+        meson ..
+        ninja
+        meson test --verbose
+
+  build_test_shuffle_macos:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      name: Checkout source code
+
+    - name: Install macOS dependencies
+      run: |
+        brew install meson
+
+    - name: Build & test
+      run: |
+        mkdir build
+        cd build
+        meson ..
+        ninja
+        meson test --verbose
+
+  build_test_shuffle_windows:
+    runs-on: windows-latest
+    env:
+      VCVARS: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat
+
+    steps:
+    - uses: actions/checkout@v2
+      name: Checkout source code
+
+    - uses: s-weigand/setup-conda@v1
+    - name: Remove hosted Python
+      shell: bash
+      run: |
+        rm -rf C:/hostedtoolcache/windows/Python
+
+    - name: Install Windows dependencies
+      shell: bash
+      run: |
+        conda install -c conda-forge meson
+
+    - name: Build & test
+      shell: cmd
+      run: |
+        call "%VCVARS%"
         mkdir build
         cd build
         meson ..
